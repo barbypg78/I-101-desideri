@@ -1,0 +1,36 @@
+name: Crea APK Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Estrai progetto
+        run: |
+          unzip I_101_Desideri_BUILD_CLOUD.zip -d progetto
+
+      - name: Configura Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configura Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Compila APK
+        run: |
+          cd progetto/IMieiDesideri
+          gradle assembleDebug
+
+      - name: Salva APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: I-101-Desideri-APK
+          path: progetto/IMieiDesideri/app/build/outputs/apk/debug/*.apk
